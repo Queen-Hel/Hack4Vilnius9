@@ -1,0 +1,85 @@
+name: Build OsmAnd debug APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout OsmAnd
+        uses: actions/checkout@v7
+        with:
+          path: android
+
+      - name: Checkout OsmAnd resources
+        uses: actions/checkout@v7
+        with:
+          repository: osmandapp/OsmAnd-resources
+          path: resources
+
+      - name: Checkout OsmAnd core
+        uses: actions/checkout@v7
+        with:
+          repository: osmandapp/OsmAnd-core
+          path: core
+
+      - name: Checkout OsmAnd legacy core
+        uses: actions/checkout@v7
+        with:
+          repository: osmandapp/OsmAnd-core-legacy
+          path: core-legacy
+
+      - name: Checkout OsmAnd build tools
+        uses: actions/checkout@v7
+        with:
+          repository: osmandapp/OsmAnd-build
+          path: build
+
+      - name: Checkout OsmAnd tools
+        uses: actions/checkout@v7
+        with:
+          repository: osmandapp/OsmAnd-tools
+          path: tools
+
+      - name: Checkout OsmAnd misc
+        uses: actions/checkout@v7
+        with:
+          repository: osmandapp/OsmAnd-misc
+          path: misc
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v6
+        with:
+          java-version: "11"
+          distribution: temurin
+
+      - name: Grant execute permission for Gradle
+        working-directory: android
+        run: chmod +x gradlew
+
+      - name: Patch memory requirements
+        working-directory: android
+        run: printf "\norg.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8\n" >> gradle.properties
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleNightlyFreeLegacyFatDebug
+
+      - name: Rename APK
+        working-directory: android
+        run: mv OsmAnd/build/outputs/apk/nightlyFreeLegacyFat/debug/OsmAnd-nightlyFree-legacy-fat-debug.apk OsmAnd/build/outputs/apk/nightlyFreeLegacyFat/debug/OsmAnd-nightlyFree-legacy-fat-debug-$(git rev-parse --short HEAD).apk
+
+      - name: Archive APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: OsmAnd-debug-apk
+          path: android/OsmAnd/build/outputs/apk/*/*/*.apk
+          retention-days: 90
