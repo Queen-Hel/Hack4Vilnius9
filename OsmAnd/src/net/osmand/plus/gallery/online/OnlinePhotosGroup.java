@@ -1,0 +1,10 @@
+package net.osmand.plus.gallery.online;
+
+public enum OnlinePhotosGroup {
+	MAPILLARY,
+	MAPILLARY_AMENITY,
+	PANORAMAX_AMENITY,
+	WIKIDATA,
+	WIKIMEDIA,
+	OTHER
+}

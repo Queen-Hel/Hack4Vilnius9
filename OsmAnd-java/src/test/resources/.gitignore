@@ -1,0 +1,10 @@
+/*.json
+/osm_live/*.json
+/search/*
+/routing/*
+/turn_lanes/*
+*.obf
+*.osm
+phrases.xml
+*.obf.gz
+/net/osmand/search/rules/rules*.xml

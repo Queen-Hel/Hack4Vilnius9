@@ -1,0 +1,23 @@
+bin
+build
+src/net/osmand/core/jni/*
+result.*
+.settings
+.project
+.classpath
+# Android Studio
+/.idea
+*.iml
+src/main/resources/*.lib
+# Gradle
+.gradle
+/local.properties
+test-results/
+# MacOSX
+.DS_Store
+
+# Output
+/build
+
+# Search rules, copied from resources/abbr by collectAbbrResources
+src/main/resources/net/osmand/search/rules/rules*.xml
